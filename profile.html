@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .profile-tab { 
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .profile-tab.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .social-links .wrap-input100 { 
+            margin-bottom: 15px;
+        }
+
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        
+        .top-button {
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .logout-button {
+            background: #ff4757;
+            margin-left: 20px;
+        }
+
+        .save-button {
+            background: #57c785;
+            margin-right: 20px;
+        }
+
+        .top-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0.9;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            display: none;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="limiter">
+        <div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+            <div class="top-buttons">
+                <button class="top-button logout-button" id="logoutButton">Выйти</button>
+                <button class="top-button save-button" type="submit" form="profileForm">Сохранить</button>
+            </div>
+
+            <div class="wrap-login100 p-l-55 p-r-55 p-t-80 p-b-54">
+                <form class="login100-form validate-form" id="profileForm">
+                    <input type="hidden" name="profileType" id="profileTypeValue">
+                    
+                    <span class="login100-form-title p-b-49">Профиль пользователя</span>
+
+                    <!-- Базовые поля -->
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Аватар</span>
+                        <input class="input100" type="file" name="avatar" accept="image/*">
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Тип профиля</span>
+                        <select class="input100" id="profileType">
+                            <option value="business">Бизнес</option>
+                            <option value="creative">Творчество</option>
+                            <option value="media">Медиа</option>
+                        </select>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Имя</span>
+                        <input class="input100" type="text" name="firstName" required 
+                               placeholder="Иван (только буквы и дефисы)" 
+                               maxlength="50" 
+                               pattern="[A-Za-zА-Яа-яЁё\s\-']+">
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Фамилия</span>
+                        <input class="input100" type="text" name="lastName" required placeholder="Иванов">
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Отчество</span>
+                        <input class="input100" type="text" name="middleName" required placeholder="Иванович">
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Телефон</span>
+                        <input class="input100" type="tel" name="phone" required placeholder="+x xxx-xx-xx">
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-23">
+                        <span class="label-input100">Почта</span>
+                        <input class="input100" type="email" name="email" required placeholder="example@mail.com">
+                    </div>
+
+                    <!-- Вкладка Бизнес -->
+                    <div class="profile-tab active" id="businessTab">
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Название компании</span>
+                            <input class="input100" type="text" name="company" required placeholder="Как называется компания?">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Ниша</span>
+                            <input class="input100" type="text" name="niche" required placeholder="В какой нише?">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Должность</span>
+                            <input class="input100" type="text" name="position" required placeholder="Какая должность?">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">LinkedIn</span>
+                            <input class="input100" type="url" name="linkedin" required placeholder="https://www.linkedin.com/in/иван-иванов">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Услуги</span>
+                            <input class="input100" type="text" name="Услуги" required placeholder="Какие услуги предоставляете?"> 
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Адрес</span>
+                            <input class="input100" type="text" name="address" required placeholder="Город, улица, дом">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Слоган</span>
+                            <input class="input100" type="text" name="slogan" required placeholder="Слоган или лозунг">
+                        </div>
+                    </div>
+
+                    <!-- Вкладка Творчество -->
+                    <div class="profile-tab" id="creativeTab">
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Псевдоним</span>
+                            <input class="input100" type="text" name="nickname" required placeholder="Сценическое имя">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Жанр</span>
+                            <select class="input100" name="genre">
+                                <option value="music">Музыка</option>
+                                <option value="art">Искусство</option>
+                                <option value="cosplay">Косплей</option>
+                            </select>
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">TikTok</span>
+                            <input class="input100" type="url" name="TikTok" required placeholder="https://www.tiktok.com/@username">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Instagram</span>
+                            <input class="input100" type="url" name="Instagram" required placeholder="https://www.tiktok.com/@username">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">YouTube</span>
+                            <input class="input100" type="url" name="YouTube" required placeholder="https://www.youtube.com/@username">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Twitter</span>
+                            <input class="input100" type="url" name="Twitter" required placeholder="https://www.twitter.com/@username">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Телеграмм</span>
+                            <input class="input100" type="url" name="Телеграмм" required placeholder="https://t.me/username">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">WhatsApp</span>
+                            <input class="input100" type="url" name="WhatsApp" required placeholder="https://wa.me/79991234567">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Портфолио</span>
+                            <input class="input100" type="url" name="portfolio" required placeholder="Скопируйте ссылку на сайт">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Ивенты</span>
+                            <input class="input100" type="text" name="Ивенты" required placeholder="Новости релизов, выступлений">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Донаты</span>
+                            <input class="input100" type="url" name="donations" required placeholder="Скопируйте ссылку на сайт">
+                        </div>
+                    </div>
+
+                    <!-- Вкладка Медиа -->
+                    <div class="profile-tab" id="mediaTab">
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Блог/Подкаст</span>
+                            <input class="input100" type="url" name="blog" required placeholder="Скопируйте ссылку на сайт">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Темы выступлений</span>
+                            <input class="input100" type="text" name="Темы выступлений" required placeholder="Напите текст">
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23">
+                            <span class="label-input100">Бесплатные ресурсы</span>
+                            <input class="input100" type="url" name="free_resources" required placeholder="Скопируйте ссылку на сайт">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const profileType = document.getElementById('profileType');
+            const profileForm = document.getElementById('profileForm');
+            const logoutButton = document.getElementById('logoutButton');
+            const notification = document.getElementById('notification');
+
+            // Загрузка профиля при загрузке страницы
+            try {
+                const response = await fetch('/api/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                const profile = await response.json();
+                if(response.ok) populateForm(profile);
+            } catch (error) {
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+
+            // Обработчик изменения типа профиля
+            profileType.addEventListener('change', function() {
+                document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(this.value + 'Tab').classList.add('active');
+                document.getElementById('profileTypeValue').value = this.value;
+            });
+
+            // Обработчик отправки формы
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(profileForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch('/api/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+                    if(response.ok) {
+                        showNotification('Профиль успешно сохранен!', 'success');
+                    } else {
+                        showNotification(result.message || 'Ошибка сохранения', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Ошибка сети', 'error');
+                }
+            });
+
+            // Обработчик выхода
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = '/index.html';
+            });
+
+            function populateForm(profile) {
+                // Заполнение полей формы данными из профиля
+                Object.entries(profile).forEach(([key, value]) => {
+                    const element = profileForm.elements[key];
+                    if(element) {
+                        if(element.type === 'checkbox') {
+                            element.checked = value;
+                        } else {
+                            element.value = value || '';
+                        }
+                    }
+                });
+                
+                // Активация соответствующего типа профиля
+                profileType.value = profile.profileType || 'business';
+                profileType.dispatchEvent(new Event('change'));
+            }
+
+            function showNotification(text, type = 'success') {
+                notification.textContent = text;
+                notification.style.backgroundColor = type === 'success' ? '#57c785' : '#ff4757';
+                notification.style.display = 'block';
+                setTimeout(() => notification.style.display = 'none', 3000);
+            }
+        });
+    </script>
+</body>
+</html>
